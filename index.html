@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Estudos</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; }
+        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+        .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Cadastrar Matéria</h1>
+    <input type="text" id="materia" placeholder="Nome da Matéria (Ex: Matemática)">
+    <input type="text" id="assunto" placeholder="Assunto (Ex: Frações)">
+    <button onclick="salvarTopico()">Salvar</button>
+
+    <h2>Matérias salvas:</h2>
+    <div id="lista"></div>
+
+    <script>
+        async function salvarTopico() {
+            const materia = document.getElementById('materia').value;
+            const assunto = document.getElementById('assunto').value;
+
+            await fetch('http://localhost:3000/topicos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ materia, assunto })
+            });
+
+            document.getElementById('materia').value = '';
+            document.getElementById('assunto').value = '';
+            carregarTopicos();
+        }
+
+        async function carregarTopicos() {
+            const response = await fetch('http://localhost:3000/topicos');
+            const topicos = await response.json();
+            
+            const lista = document.getElementById('lista');
+            lista.innerHTML = '';
+            
+            topicos.forEach(topico => {
+                lista.innerHTML += `
+                    <div class="card">
+                        <strong>${topico.materia}</strong> - ${topico.assunto}
+                    </div>
+                `;
+            });
+        }
+
+        carregarTopicos();
+    </script>
+</body>
+</html>
