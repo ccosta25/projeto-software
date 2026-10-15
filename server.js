@@ -42,6 +42,16 @@ app.get('/topicos', (req, res) => {
     });
 });
 
+app.delete('/topicos/:id', (req, res) => {
+    const { id } = req.params;
+    db.run("DELETE FROM topicos WHERE id = ?", id, function(err) {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+        res.json({ mensagem: "Excluído" });
+    });
+});
+
 app.listen(3000, () => {
-    console.log("Servidor rodando");
+    console.log("Servidor rodando na porta 3000");
 });

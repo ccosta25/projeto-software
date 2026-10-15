@@ -5,20 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Estudos</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; }
-        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
-        .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 5px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fcf9fc;
+            color: #4a4a4a;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #8c73b0;
+            text-align: center;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.2rem;
+            color: #8c73b0;
+            margin-top: 30px;
+            border-bottom: 1px solid #f0e6f0;
+            padding-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 15px 0;
+            border: 1px solid #e1d5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            color: #4a4a4a;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #bfa6d8;
+            box-shadow: 0 0 5px rgba(191, 166, 216, 0.3);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #a88ecc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #9275ba;
+        }
+        .card {
+            background-color: #fefdfe;
+            border: 1px solid #f0e6f0;
+            padding: 15px;
+            margin-top: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
+        }
+        .info-topico {
+            display: flex;
+            flex-direction: column;
+        }
+        .info-topico strong {
+            color: #6a538c;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+        .info-topico span {
+            font-size: 0.9rem;
+            color: #7a7a7a;
+        }
+        .btn-excluir {
+            background-color: #f29b9b;
+            width: auto;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+        .btn-excluir:hover {
+            background-color: #e57c7c;
+        }
     </style>
 </head>
 <body>
-    <h1>Cadastrar Matéria</h1>
-    <input type="text" id="materia" placeholder="Nome da Matéria (Ex: Matemática)">
-    <input type="text" id="assunto" placeholder="Assunto (Ex: Frações)">
-    <button onclick="salvarTopico()">Salvar</button>
+    <div class="container">
+        <h1>Cadastrar Matéria</h1>
+        <input type="text" id="materia" placeholder="Nome da Matéria (Ex: Matemática)">
+        <input type="text" id="assunto" placeholder="Assunto (Ex: Frações)">
+        <button onclick="salvarTopico()">Salvar Tópico</button>
 
-    <h2>Matérias salvas: </h2>
-    <div id="lista"></div>
+        <h2>Matérias Salvas</h2>
+        <div id="lista"></div>
+    </div>
 
     <script>
         async function salvarTopico() {
@@ -46,10 +138,19 @@
             topicos.forEach(topico => {
                 lista.innerHTML += `
                     <div class="card">
-                        <strong>${topico.materia}</strong> - ${topico.assunto}
+                        <div class="info-topico">
+                            <strong>${topico.materia}</strong>
+                            <span>${topico.assunto}</span>
+                        </div>
+                        <button class="btn-excluir" onclick="deletarTopico(${topico.id})">Excluir</button>
                     </div>
                 `;
             });
+        }
+
+        async function deletarTopico(id) {
+            await fetch(`http://localhost:3000/topicos/${id}`, { method: 'DELETE' });
+            carregarTopicos();
         }
 
         carregarTopicos();
